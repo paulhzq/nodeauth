@@ -1,5 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+
+var User = require('../models/user');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -19,13 +23,15 @@ router.get('/login', function(req, res, next) {
   });
 });
 
-router.post('/register', function(req, res, next) {
+router.post('/register', multipartMiddleware, function(req, res, next) {
   //Get Form Values
   var name = req.body.name;
   var email = req.body.email;
   var username = req.body.username;
   var password = req.body.password;
   var password2 = req.body.password2;
+
+  console.log(name,email,username,password,password2);
   // Check for Image Field
 
   if(req.files && req.files.profileimage ){
@@ -68,13 +74,13 @@ router.post('/register', function(req, res, next) {
       profileimage: profileImageName
     });
 
-    // User.createUser(newUser, function(err, user){
-    //   if(error) throw err;
-    //   console.log(user);
-    // });
+    User.createUser(newUser, function(err, user){
+      if(err) throw err;
+      console.log(user);
+    });
 
     req.flash('success','You are now registered and may log in');
-    req.location('/');
+    res.location('/');
     res.redirect('/');
   }
 });
