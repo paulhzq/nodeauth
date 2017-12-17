@@ -48,11 +48,11 @@ app.use(passport.session());
 app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
     var namespace = param.split('.')
-    , root = namspace.shift()
+    , root = namespace.shift()
     , formParam = root;
 
     while(namespace.length) {
-      formParam += '[' + namspace.shift() +']';
+      formParam += '[' + namespace.shift() +']';
     }
     return {
       param : formParam,
